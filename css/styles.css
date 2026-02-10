@@ -1,0 +1,196 @@
+:root{
+  --bg0:#0b1020;
+  --bg1:#0f1730;
+  --card:rgba(255,255,255,.06);
+  --card2:rgba(255,255,255,.09);
+  --stroke:rgba(255,255,255,.10);
+  --text:#e9eefc;
+  --muted:rgba(233,238,252,.65);
+  --accent:#7c5cff;
+  --accent2:#19c37d;
+}
+
+*{box-sizing:border-box}
+body.app-bg{
+  min-height:100vh;
+  background:radial-gradient(1200px 800px at 15% 20%, rgba(124,92,255,.22), transparent 55%),
+             radial-gradient(1000px 700px at 85% 0%, rgba(25,195,125,.12), transparent 50%),
+             linear-gradient(180deg,var(--bg0),var(--bg1));
+  color:var(--text);
+}
+
+.app-header{
+  background:rgba(0,0,0,.28);
+  border-bottom:1px solid var(--stroke);
+  backdrop-filter: blur(10px);
+}
+.brand-badge{
+  width:44px;height:44px;
+  border:1px solid var(--stroke);
+  background:rgba(255,255,255,.06);
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+}
+.brand-logo{width:28px;height:28px; object-fit:contain;}
+.search-wrap-compact{padding:6px 10px;}
+
+
+.app-shell{display:flex; min-height:100vh;}
+
+.app-sidebar{
+  width:280px;
+  background:rgba(0,0,0,.30);
+  border-right:1px solid var(--stroke);
+  backdrop-filter: blur(10px);
+  padding:18px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.sidebar-top{display:flex; gap:12px; align-items:center;}
+.logo-wrap{
+  width:44px;height:44px;
+  border:1px solid var(--stroke);
+  background:rgba(255,255,255,.06);
+  border-radius:14px;
+  display:grid;
+  place-items:center;
+}
+.sidebar-logo{width:28px;height:28px; object-fit:contain;}
+.sidebar-title{line-height:1.1}
+
+.sidebar-nav{display:flex; flex-direction:column; gap:10px; margin-top:6px;}
+.nav-divider{height:1px;background:var(--stroke); margin:8px 0;}
+
+.nav-btn{
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid transparent;
+  background:transparent;
+  color:var(--text);
+  text-align:left;
+  transition: all .15s ease;
+}
+.nav-btn i{opacity:.85}
+.nav-btn:hover{background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.08)}
+.nav-btn.active{background:rgba(124,92,255,.18); border-color:rgba(124,92,255,.30)}
+.nav-btn-primary{background:rgba(25,195,125,.14); border-color:rgba(25,195,125,.25)}
+.nav-btn-primary:hover{background:rgba(25,195,125,.20); border-color:rgba(25,195,125,.33)}
+
+.sidebar-footer{margin-top:auto}
+.pill{display:inline-flex; gap:8px; align-items:center; padding:8px 10px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid var(--stroke); color:var(--muted)}
+
+.app-main{flex:1; display:flex; flex-direction:column;}
+
+.app-topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:10px 0 6px;
+}
+
+.search-wrap{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--stroke);
+}
+.search-wrap i{opacity:.7}
+.search-wrap input{
+  background:transparent !important;
+  border:none !important;
+  color:var(--text) !important;
+  outline:none !important;
+  width:260px;
+}
+.search-wrap input::placeholder{color:rgba(233,238,252,.55)}
+
+.filters-menu{min-width:260px; border:1px solid var(--stroke)}
+
+.kpis{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; padding:0;}
+.kpi-card{background:var(--card); border:1px solid var(--stroke); border-radius:18px; padding:14px 14px 12px; backdrop-filter: blur(10px)}
+.kpi-label{color:var(--muted); font-size:.85rem}
+.kpi-value{font-size:1.35rem; font-weight:700; letter-spacing:.2px}
+
+.content-area{padding:0 0 18px; flex:1; overflow:auto; overflow-x:hidden;}
+.view{display:none}
+.view.active{display:block}
+
+.card-glass{background:var(--card); border:1px solid var(--stroke); border-radius:18px; overflow:hidden;}
+.card-glass-header{display:flex; justify-content:space-between; align-items:center; padding:12px 14px; border-bottom:1px solid var(--stroke);}
+
+.table-saas{table-layout:fixed; width:100%}
+.table-saas thead th{font-size:.8rem; color:rgba(233,238,252,.75); border-bottom:1px solid var(--stroke) !important; white-space:nowrap}
+.table-saas td{white-space:normal; vertical-align:middle; border-color:rgba(255,255,255,.06)}
+.table-saas tbody tr{cursor:default}
+
+.cell-main{font-weight:700; line-height:1.15; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.cell-sub{color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.cell-wrap{display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; color:rgba(233,238,252,.80)}
+.cell-chip{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.10); color:rgba(233,238,252,.80); font-size:.80rem}
+
+.chip{padding:4px 8px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.10); color:rgba(233,238,252,.75); font-size:.75rem}
+
+.modal-saas{
+  background:linear-gradient(180deg, rgba(15,23,48,.98), rgba(11,16,32,.98));
+  color:var(--text);
+  border:1px solid var(--stroke);
+}
+.modal-saas .modal-header{border-bottom:1px solid var(--stroke)}
+.modal-saas .modal-footer{border-top:1px solid var(--stroke)}
+.modal-saas .form-control, .modal-saas .form-select{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.10);
+  color:var(--text);
+}
+.modal-saas .form-control::placeholder{color:rgba(233,238,252,.55)}
+.modal-saas .form-control:disabled{opacity:.8}
+
+.app-footer{padding:10px 0 16px; display:flex; justify-content:space-between; border-top:1px solid rgba(255,255,255,.06)}
+
+.btn-primary{background:var(--accent); border-color:rgba(124,92,255,.7)}
+.btn-primary:hover{filter:brightness(1.05)}
+
+@media (max-width: 992px){
+  .app-sidebar{display:none}
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .search-wrap input{width:160px}
+}
+/* Dropdown escuro (Bootstrap 5.0–5.2) */
+.dropdown-menu {
+  background-color: #111827; /* fundo */
+  border: 1px solid rgba(255,255,255,.10);
+}
+
+.dropdown-item {
+  color: #e5e7eb; /* texto */
+}
+
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: rgba(255,255,255,.08);
+  color: #ffffff;
+}
+
+.dropdown-divider {
+  border-top-color: rgba(255,255,255,.12);
+}
+select.form-select {
+  background-color: #111827;
+  color: #e5e7eb;
+  border: 1px solid rgba(255,255,255,.12);
+}
+
+select.form-select option {
+  background-color: #111827;
+  color: #e5e7eb;
+}
