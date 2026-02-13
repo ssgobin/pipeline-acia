@@ -93,7 +93,7 @@ function toast(message, type = "info") {
   div.innerHTML = `${escapeHtml(message)}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
   host.appendChild(div);
   setTimeout(() => {
-    try { div.classList.remove("show"); div.remove(); } catch {}
+    try { div.classList.remove("show"); div.remove(); } catch { }
   }, 4000);
 }
 
@@ -327,7 +327,7 @@ async function saveLead() {
         // for lead time fallback without querying timestamps
         createdAtDate: new Date().toISOString(),
       });
-      toast(`Lead criado (${docRef.id.slice(0,6)}...)`, "success");
+      toast(`Lead criado (${docRef.id.slice(0, 6)}...)`, "success");
     } else {
       await updateDoc(doc(db, "leads", id), {
         ...payload,
@@ -397,7 +397,7 @@ function getFilteredLeads() {
 
 function renderKPIs(list) {
   const total = list.length;
-  const hot = list.filter(l => ["AVANCADO","EM NEGOCIACAO","FECHAMENTO","APROVADO"].includes(normalized(l.status))).length;
+  const hot = list.filter(l => ["AVANCADO", "EM NEGOCIACAO", "FECHAMENTO", "APROVADO"].includes(normalized(l.status))).length;
   const lost = list.filter(l => normalized(l.status) === "PERDIDO").length;
   const today = list.filter(l => {
     const iso = l.updatedAtDate || l.createdAtDate || "";
@@ -425,6 +425,21 @@ function statusBadge(status) {
   if (key === "STAND BY") icon = "bi-pause-circle";
 
   return `<span class="badge badge-soft"><i class="bi ${icon}"></i> ${escapeHtml(label)}</span>`;
+}
+
+function sortLeadsBySLA(list) {
+  const sev = (c) => c ? (c.totalBreach ? 3 : (c.color === "red" ? 2 : c.color === "yellow" ? 1 : 0)) : 0;
+  return [...list].sort((a, b) => {
+    const ca = classifySLA(a);
+    const cb = classifySLA(b);
+    const sdiff = sev(cb) - sev(ca);
+    if (sdiff !== 0) return sdiff;
+    const ddiff = ((cb && cb.days) || 0) - ((ca && ca.days) || 0);
+    if (ddiff !== 0) return ddiff;
+    const ta = new Date(a.updatedAtDate || a.createdAtDate || 0).getTime();
+    const tb = new Date(b.updatedAtDate || b.createdAtDate || 0).getTime();
+    return tb - ta;
+  });
 }
 
 function renderTable(list) {
@@ -485,7 +500,7 @@ function renderTable(list) {
 }
 
 function render() {
-  const list = getFilteredLeads();
+  const list = sortLeadsBySLA(getFilteredLeads());
   renderKPIs(list);
   renderTable(list);
   renderAlerts(list);
