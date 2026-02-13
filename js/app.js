@@ -42,11 +42,22 @@ const STATUS_MAP = {
   "PENDENTE": { feedback: "1º CONTATO + PITCH", proxima: "ENVIAR PROPOSTA" },
   "AVANCADO": { feedback: "CLIENTE INTERESSADO", proxima: "NEGOCIAR/FECHAR" },
   "EM NEGOCIACAO": { feedback: "NEGOCIANDO PROPOSTA", proxima: "ENVIAR CONTRATO" },
-  "FECHAMENTO": { feedback: "CONTRATO ENVIADO", proxima: "NEGÓCIO FECHADO" },
-  "APROVADO": { feedback: "PAGAMENTO/CONTRATO", proxima: "CONFIRMAR PAGTO." },
+  "FECHAMENTO": { feedback: "CONTRATO ENVIADO", proxima: "FECHADO (ACOMPANHAMENTO)" },
+  "APROVADO": { feedback: "PAGAMENTO/CONTRATO", proxima: "FECHADO" },
   "STAND BY": { feedback: "SEM INTERESSE", proxima: "NOVO CONTATO 15 DIAS" },
   "PERDIDO": { feedback: "NÃO APROVADO", proxima: "NEGÓCIO PERDIDO" },
 };
+
+const SLA_RULES = {
+  "PENDENTE": { green: 1, yellow: 2, max: 1 },
+  "AVANCADO": { green: 2, yellow: 3, max: 2 },
+  "EM NEGOCIACAO": { green: 2, yellow: 3, max: 2 },
+  "FECHAMENTO": { green: 2, yellow: 3, max: 2 },
+  "APROVADO": { green: 1, yellow: 2, max: 1 },
+  "STAND BY": { green: 15, yellow: 15, max: 15 },
+};
+
+const TOTAL_MAX_DAYS = 10;
 
 function canonStatus(v) {
   return String(v || "")
@@ -111,6 +122,46 @@ function leadTimeDays(lead) {
   const base = lead.ultimoContato ? new Date(lead.ultimoContato) : (lead.createdAtDate ? new Date(lead.createdAtDate) : null);
   if (!base) return 0;
   return diffDays(new Date(), base);
+}
+
+function classifySLA(lead) {
+  const key = canonStatus(lead.status || "PENDENTE");
+  if (key === "PERDIDO") return null;
+  const days = leadTimeDays(lead);
+  const rule = SLA_RULES[key] || SLA_RULES["PENDENTE"];
+  let color = "green";
+  if (key === "STAND BY") {
+    color = days >= rule.green ? "yellow" : "green";
+  } else {
+    if (days > rule.yellow) color = "red";
+    else if (days > rule.green) color = "yellow";
+  }
+  const cISO = lead.createdAtDate || "";
+  const totalDays = cISO ? diffDays(new Date(), new Date(cISO)) : 0;
+  const totalBreach = totalDays > TOTAL_MAX_DAYS && !["APROVADO", "PERDIDO"].includes(key);
+  return { color, days, totalDays, totalBreach };
+}
+
+function renderAlerts(list) {
+  const host = $("alertHost");
+  host.innerHTML = "";
+  let redStage = 0;
+  let totalBreach = 0;
+  for (const l of list) {
+    const cl = classifySLA(l);
+    if (!cl) continue;
+    if (cl.color === "red") redStage++;
+    if (cl.totalBreach) totalBreach++;
+  }
+  if (redStage || totalBreach) {
+    const div = document.createElement("div");
+    const parts = [];
+    if (redStage) parts.push(`${redStage} em vermelho por etapa`);
+    if (totalBreach) parts.push(`${totalBreach} acima de 10 dias totais`);
+    div.className = "alert alert-danger";
+    div.textContent = parts.join(" • ");
+    host.appendChild(div);
+  }
 }
 
 function applyStatusToFields(status, feedbackEl, proximaEl) {
@@ -388,6 +439,9 @@ function renderTable(list) {
     const feedback = escapeHtml(lead.feedback || "-");
     const prox = escapeHtml(lead.proximaAcao || "-");
     const ultimo = lead.ultimoContato ? toDateInputValue(lead.ultimoContato) : "-";
+    const sla = classifySLA(lead);
+    const slaClass = sla ? (sla.color === "green" ? "sla-green" : sla.color === "yellow" ? "sla-yellow" : "sla-red") : "";
+    const slaChip = sla ? `<span class="chip chip-sla ${slaClass}">${sla.days}d</span>${sla.totalBreach ? `<span class="chip chip-sla sla-red">>10d</span>` : ""}` : "";
 
     const statusSelect = `
       <select class="form-select form-select-sm bg-transparent text-light border-0" data-action="status" data-id="${lead.id}">
@@ -402,7 +456,7 @@ function renderTable(list) {
       <td>${statusSelect}</td>
       <td><div class="cell-wrap">${feedback}</div></td>
       <td><div class="cell-wrap">${prox}</div></td>
-      <td>${escapeHtml(ultimo)}</td>
+      <td>${escapeHtml(ultimo)} ${slaChip}</td>
       <td class="text-end">
         <button class="btn btn-sm btn-outline-light" data-action="edit" data-id="${lead.id}" title="Editar"><i class="bi bi-pencil"></i></button>
         <button class="btn btn-sm btn-outline-danger" data-action="delete" data-id="${lead.id}" title="Deletar"><i class="bi bi-trash"></i></button>
@@ -434,6 +488,7 @@ function render() {
   const list = getFilteredLeads();
   renderKPIs(list);
   renderTable(list);
+  renderAlerts(list);
 }
 
 // ---------- Firestore realtime ----------
@@ -529,4 +584,3 @@ $("btnSeedDemo").addEventListener("click", async () => {
     toast(`Erro ao criar demo: ${e.message}`, "danger");
   }
 });
-
