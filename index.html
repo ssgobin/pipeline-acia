@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="pt-br">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -9,129 +10,215 @@
   <link rel="icon" type="image/svg+xml" href="./assets/img/logo_principal.svg" />
   <link rel="stylesheet" href="./css/styles.css" />
 </head>
+
 <body class="app-bg">
 
-<header class="app-header sticky-top">
-  <div class="container-fluid px-3">
-    <div class="d-flex align-items-center gap-2 py-2 flex-wrap">
-      <div class="d-flex align-items-center gap-2 me-2">
-        <span class="brand-badge"><img src="./assets/img/logo_white.svg" class="brand-logo" alt="Logo" /></span>
-        <div class="lh-1">
-          <div class="fw-semibold">Pipeline</div>
-          <div class="text-muted small">Status → feedback e próxima ação automáticos (1-1-1)</div>
-        </div>
-      </div>
-
-      <div class="d-flex align-items-center gap-2 ms-auto flex-wrap">
-        <div class="search-wrap search-wrap-compact"><i class="bi bi-search"></i><input id="q" class="form-control form-control-sm" placeholder="Buscar por nome, empresa, responsável..." /></div>
-
-        <div class="dropdown">
-          <button class="btn btn-sm btn-outline-light dropdown-toggle" data-bs-toggle="dropdown" type="button"><i class="bi bi-funnel"></i> Filtros</button>
-          <div class="dropdown-menu dropdown-menu-end dropdown-menu-dark p-3 filters-menu" data-bs-theme="dark">
-            <div class="mb-2"><label class="form-label form-label-sm">Status</label><select id="filterStatus" class="form-select form-select-sm"><option value="">Todos</option></select></div>
-            <div class="mb-2"><label class="form-label form-label-sm">Responsável</label><select id="filterResp" class="form-select form-select-sm"><option value="">Todos</option></select></div>
-            <div class="mb-2"><label class="form-label form-label-sm">Segmento</label><select id="filterSeg" class="form-select form-select-sm"><option value="">Todos</option></select></div>
-            <button id="btnClearFilters" class="btn btn-sm btn-outline-light w-100" type="button">Limpar</button>
+  <header class="app-header sticky-top">
+    <div class="container-fluid px-3">
+      <div class="d-flex align-items-center gap-2 py-2 flex-wrap">
+        <div class="d-flex align-items-center gap-2 me-2">
+          <span class="brand-badge"><img src="./assets/img/logo_white.svg" class="brand-logo" alt="Logo" /></span>
+          <div class="lh-1">
+            <div class="fw-semibold">Pipeline</div>
+            <div class="text-muted small">Status → feedback e próxima ação automáticos (1-1-1)</div>
           </div>
         </div>
 
-        <button id="btnNewLead" class="btn btn-sm btn-success" type="button"><i class="bi bi-plus-circle"></i> Novo lead</button>
-        <button style="display: none;" id="btnSeedDemo" class="btn btn-sm btn-outline-light" type="button" title="Popular demo"><i class="bi bi-stars"></i></button>
-        <button id="btnRefresh" class="btn btn-sm btn-outline-light" type="button" title="Recarregar"><i class="bi bi-arrow-clockwise"></i></button>
+        <div class="d-flex align-items-center gap-2 ms-auto flex-wrap">
+          <div class="search-wrap search-wrap-compact"><i class="bi bi-search"></i><input id="q"
+              class="form-control form-control-sm" placeholder="Buscar por nome, empresa, responsável..." /></div>
+
+          <div class="dropdown">
+            <button class="btn btn-sm btn-outline-light dropdown-toggle" data-bs-toggle="dropdown" type="button"><i
+                class="bi bi-funnel"></i> Filtros</button>
+            <div class="dropdown-menu dropdown-menu-end dropdown-menu-dark p-3 filters-menu" data-bs-theme="dark">
+              <div class="mb-2"><label class="form-label form-label-sm">Status</label><select id="filterStatus"
+                  class="form-select form-select-sm">
+                  <option value="">Todos</option>
+                </select></div>
+              <div class="mb-2"><label class="form-label form-label-sm">Responsável</label><select id="filterResp"
+                  class="form-select form-select-sm">
+                  <option value="">Todos</option>
+                </select></div>
+              <div class="mb-2"><label class="form-label form-label-sm">Segmento</label><select id="filterSeg"
+                  class="form-select form-select-sm">
+                  <option value="">Todos</option>
+                </select></div>
+              <button id="btnClearFilters" class="btn btn-sm btn-outline-light w-100" type="button">Limpar</button>
+            </div>
+          </div>
+
+          <a href="./dashboard-tv.html" target="_blank" class="btn btn-sm btn-outline-info">
+            <i class="bi bi-tv"></i> Dashboard TV
+          </a>
+          <button id="btnNewLead" class="btn btn-sm btn-success" type="button"><i class="bi bi-plus-circle"></i> Novo
+            lead</button>
+          <button style="display: none;" id="btnSeedDemo" class="btn btn-sm btn-outline-light" type="button"
+            title="Popular demo"><i class="bi bi-stars"></i></button>
+          <button id="btnRefresh" class="btn btn-sm btn-outline-light" type="button" title="Recarregar"><i
+              class="bi bi-arrow-clockwise"></i></button>
+        </div>
       </div>
     </div>
-  </div>
-</header>
-<main class="app-main container-fluid px-3 pb-3">
-    
+  </header>
+  <main class="app-main container-fluid px-3 pb-3">
+
 
     <section class="kpis">
-      <div class="kpi-card"><div class="kpi-label">Leads</div><div id="kpiTotal" class="kpi-value">0</div></div>
-      <div class="kpi-card"><div class="kpi-label">Avancado+</div><div id="kpiHot" class="kpi-value">0</div></div>
-      <div class="kpi-card"><div class="kpi-label">Perdido</div><div id="kpiLost" class="kpi-value">0</div></div>
-      <div class="kpi-card"><div class="kpi-label">Hoje</div><div id="kpiToday" class="kpi-value">0</div></div>
+      <div class="kpi-card">
+        <div class="kpi-label">Leads</div>
+        <div id="kpiTotal" class="kpi-value">0</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Avancado+</div>
+        <div id="kpiHot" class="kpi-value">0</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Perdido</div>
+        <div id="kpiLost" class="kpi-value">0</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Hoje</div>
+        <div id="kpiToday" class="kpi-value">0</div>
+      </div>
     </section>
 
-    <section class="pt-2"><div id="alertHost"></div></section>
+    <section class="pt-2">
+      <div id="alertHost"></div>
+    </section>
 
     <section class="content-area">
-            <div id="tableView" class="view active">
+      <div id="tableView" class="view active">
         <div class="card-glass">
-          <div class="card-glass-header"><div class="fw-semibold">Leads</div><div class="text-muted small">Duplo clique para editar. Somente STATUS é editável.</div></div>
+          <div class="card-glass-header">
+            <div class="fw-semibold">Leads</div>
+            <div class="text-muted small">Duplo clique para editar. Somente STATUS é editável.</div>
+          </div>
           <table class="table table-dark table-hover align-middle mb-0 table-saas">
-              <thead>
-                <tr>
-                  <th style="width: 18%">Lead</th>
-                  <th style="width: 18%">Empresa</th>
-                  <th style="width: 12%">Responsável</th>
-                  <th style="width: 14%">Status</th>
-                  <th style="width: 19%">Feedback</th>
-                  <th style="width: 19%">Próxima ação</th>
-                  <th style="width: 10%">Últ. contato</th>
-                  <th class="text-end" style="width: 10%">Ações</th>
-                </tr>
-              </thead>
-              <tbody id="tableBody"></tbody>
-            </table>
+            <thead>
+              <tr>
+                <th class="col-lead" style="width: 30%">Lead</th>
+                <th class="col-status" style="width: 14%">Status</th>
+                <th class="col-follow" style="width: 26%">Acompanhamento</th>
+                <th class="col-last" style="width: 16%">Últ. contato</th>
+                <th class="text-end col-actions" style="width: 14%">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
         </div>
       </div>
     </section>
 
-    <footer class="app-footer"><span class="text-muted">Pipeline | Bootstrap + Firestore</span><span class="text-muted">v1</span></footer>
+    <footer class="app-footer"><span class="text-muted">Pipeline | Bootstrap + Firestore</span><span
+        class="text-muted">v1</span></footer>
   </main>
 
-<div class="modal fade" id="leadModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-scrollable">
-    <div class="modal-content modal-saas">
-      <div class="modal-header">
-        <div>
-          <h5 id="leadModalTitle" class="modal-title mb-0">Novo lead</h5>
-          <div class="text-muted small">Somente STATUS altera feedback/proxima acao (1-1-1).</div>
+  <div class="modal fade" id="leadModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content modal-saas modal-lead">
+        <div class="modal-header">
+          <div>
+            <h5 id="leadModalTitle" class="modal-title mb-0">Novo lead</h5>
+            <div class="text-muted small">Somente STATUS altera feedback/proxima acao (1-1-1).</div>
+          </div>
+          <button class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
         </div>
-        <button class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-      </div>
 
-      <div class="modal-body">
-        <form id="leadForm" class="row g-3">
-          <input type="hidden" id="leadId" />
+        <div class="modal-body">
+          <form id="leadForm" class="row g-3">
+            <input type="hidden" id="leadId" />
 
-          <div class="col-md-3"><label class="form-label">Primeiro nome</label><input id="firstName" class="form-control" placeholder="Ex: Joao" /></div>
-          <div class="col-md-3"><label class="form-label">Sobrenome</label><input id="lastName" class="form-control" placeholder="Ex: Silva" /></div>
-          <div class="col-md-6"><label class="form-label">Empresa</label><input id="company" class="form-control" placeholder="Ex: ACME Ltda" /></div>
+            <div class="col-12 form-section-title">Identificacao</div>
 
-          <div class="col-md-3"><label class="form-label">Segmento</label><select id="segmento" class="form-select"></select></div>
-          <div class="col-md-3"><label class="form-label">Porte</label><select id="porte" class="form-select"></select></div>
-          <div class="col-md-3"><label class="form-label">Tempo associacao</label><select id="tempoAssociacao" class="form-select"></select></div>
-          <div class="col-md-3"><label class="form-label">Responsavel</label><select id="responsavel" class="form-select"></select></div>
+            <div class="col-md-3"><label class="form-label">Primeiro nome</label><input id="firstName"
+                class="form-control" placeholder="Ex: Joao" /></div>
+            <div class="col-md-3"><label class="form-label">Sobrenome</label><input id="lastName" class="form-control"
+                placeholder="Ex: Silva" /></div>
+            <div class="col-md-6"><label class="form-label">Empresa</label><input id="company" class="form-control"
+                placeholder="Ex: ACME Ltda" /></div>
 
-          <div class="col-md-4"><label class="form-label">Historico patrocinio</label><select id="historicoPatrocinio" class="form-select"></select></div>
-          <div class="col-md-4"><label class="form-label">Historico</label><select id="historico" class="form-select"></select></div>
-          <div class="col-md-4"><label class="form-label">Evento</label><select id="evento" class="form-select"></select></div>
+            <div class="col-12 form-divider"></div>
+            <div class="col-12 form-section-title">Perfil e contexto</div>
 
-          <div class="col-md-4"><label class="form-label">Cota ideal</label><select id="cotaIdeal" class="form-select"></select></div>
-          <div class="col-md-4"><label class="form-label">Cotacao opcao 2</label><select id="cotaOpcao2" class="form-select"></select></div>
-          <div class="col-md-4"><label class="form-label">Cota opcao 3</label><select id="cotaOpcao3" class="form-select"></select></div>
+            <div class="col-md-3"><label class="form-label">Segmento</label><select id="segmento"
+                class="form-select"></select></div>
+            <div class="col-md-3"><label class="form-label">Porte</label><select id="porte"
+                class="form-select"></select></div>
+            <div class="col-md-3"><label class="form-label">Tempo associacao</label><select id="tempoAssociacao"
+                class="form-select"></select></div>
+            <div class="col-md-3"><label class="form-label">Responsavel</label><select id="responsavel"
+                class="form-select"></select></div>
 
-          <div class="col-md-4"><label class="form-label">Status (editavel)</label><select id="status" class="form-select"></select></div>
-          <div class="col-md-4"><label class="form-label">Feedback (bloqueado)</label><input id="feedback" class="form-control" disabled /></div>
-          <div class="col-md-4"><label class="form-label">Proxima acao (bloqueado)</label><input id="proximaAcao" class="form-control" disabled /></div>
+            <div class="col-12 form-divider"></div>
+            <div class="col-12 form-section-title">Historico e evento</div>
 
-          <div class="col-md-3"><label class="form-label">Ultimo contato</label><input id="ultimoContato" type="date" class="form-control" /></div>
-          <div class="col-md-3"><label class="form-label">Contato</label><input id="contato" class="form-control" placeholder="Telefone / email" /></div>
-          <div class="col-md-6"><label class="form-label">Observacoes / motivo</label><input id="observacoes" class="form-control" placeholder="Notas rapidas..." /></div>
-        </form>
-      </div>
+            <div class="col-md-4"><label class="form-label">Historico patrocinio</label><select id="historicoPatrocinio"
+                class="form-select"></select></div>
+            <div class="col-md-4"><label class="form-label">Historico</label><select id="historico"
+                class="form-select"></select></div>
+            <div class="col-md-4"><label class="form-label">Evento</label><select id="evento"
+                class="form-select"></select></div>
 
-      <div class="modal-footer">
-        <button id="btnDeleteLead" class="btn btn-outline-danger me-auto d-none" type="button"><i class="bi bi-trash"></i> Deletar</button>
-        <button class="btn btn-outline-light" data-bs-dismiss="modal" type="button">Cancelar</button>
-        <button id="btnSaveLead" class="btn btn-primary" type="button"><i class="bi bi-check2-circle"></i> Salvar</button>
+            <div class="col-12 form-divider"></div>
+            <div class="col-12 form-section-title">Cota e beneficios</div>
+
+            <div class="col-md-4"><label id="labelCotaIdeal" class="form-label">Cota ideal</label><select id="cotaIdeal"
+                class="form-select"></select></div>
+            <div class="col-md-4">
+              <label id="labelCotaOpcao2" class="form-label">Cotacao opcao 2</label>
+              <select id="cotaOpcao2" class="form-select"></select>
+              <div id="beneficio1OutroWrap" class="mt-2 d-none">
+                <label class="form-label">Beneficio 1 (outro)</label>
+                <input id="beneficio1Outro" class="form-control" placeholder="Digite o beneficio" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label id="labelCotaOpcao3" class="form-label">Cota opcao 3</label>
+              <select id="cotaOpcao3" class="form-select"></select>
+              <div id="beneficio2OutroWrap" class="mt-2 d-none">
+                <label class="form-label">Beneficio 2 (outro)</label>
+                <input id="beneficio2Outro" class="form-control" placeholder="Digite o beneficio" />
+              </div>
+            </div>
+
+            <div class="col-12 form-divider"></div>
+            <div class="col-12 form-section-title">Status e acompanhamento</div>
+
+            <div class="col-md-4"><label class="form-label">Status (editavel)</label><select id="status"
+                class="form-select"></select></div>
+            <div class="col-md-4"><label class="form-label">Feedback (bloqueado)</label><input id="feedback"
+                class="form-control" disabled /></div>
+            <div class="col-md-4"><label class="form-label">Proxima acao (bloqueado)</label><input id="proximaAcao"
+                class="form-control" disabled /></div>
+
+            <div class="col-12 form-divider"></div>
+            <div class="col-12 form-section-title">Contato e notas</div>
+
+            <div class="col-md-3"><label class="form-label">Ultimo contato</label><input id="ultimoContato" type="date"
+                class="form-control" /></div>
+            <div class="col-md-3"><label class="form-label">Contato</label><input id="contato" class="form-control"
+                placeholder="Telefone / email" /></div>
+            <div class="col-md-6"><label class="form-label">Observacoes / motivo</label><textarea id="observacoes"
+              class="form-control" rows="3" placeholder="Notas rapidas..."></textarea></div>
+            <div class="col-md-6"><label class="form-label">Historico (auto)</label><textarea id="historicoLog"
+              class="form-control" rows="3" readonly></textarea></div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <button id="btnDeleteLead" class="btn btn-outline-danger me-auto d-none" type="button"><i
+              class="bi bi-trash"></i> Deletar</button>
+          <button class="btn btn-outline-light" data-bs-dismiss="modal" type="button">Cancelar</button>
+          <button id="btnSaveLead" class="btn btn-primary" type="button"><i class="bi bi-check2-circle"></i>
+            Salvar</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script type="module" src="./js/app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="./js/app.js"></script>
 </body>
+
 </html>

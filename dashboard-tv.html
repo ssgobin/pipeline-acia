@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pipeline TV Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link rel="icon" type="image/svg+xml" href="./assets/img/logo_principal.svg" />
+  <link rel="stylesheet" href="./css/dashboard-tv.css" />
+</head>
+<body>
+  <div class="tv-shell">
+    <!-- topo -->
+    <header class="tv-header">
+      <div class="brand">
+        <div class="brand-logo-wrap">
+          <img src="./assets/img/logo_white.svg" alt="Logo" class="brand-logo" />
+        </div>
+        <div>
+          <div class="brand-title">Pipeline</div>
+          <div class="brand-sub">Painel ao vivo • Leads • Status • Performance</div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="clock-box">
+          <div id="clockTime" class="clock-time">--:--:--</div>
+          <div id="clockDate" class="clock-date">--</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- KPIs -->
+    <section class="kpi-grid">
+      <div class="kpi-card glow-purple">
+        <div class="kpi-label"><i class="bi bi-people"></i> Leads totais</div>
+        <div id="kpiTotal" class="kpi-value">0</div>
+      </div>
+
+      <div class="kpi-card glow-green">
+        <div class="kpi-label"><i class="bi bi-fire"></i> Quentes (Avançado+)</div>
+        <div id="kpiHot" class="kpi-value">0</div>
+      </div>
+
+      <div class="kpi-card glow-red">
+        <div class="kpi-label"><i class="bi bi-x-octagon"></i> Perdidos</div>
+        <div id="kpiLost" class="kpi-value">0</div>
+      </div>
+
+      <div class="kpi-card glow-blue">
+        <div class="kpi-label"><i class="bi bi-calendar-check"></i> Atualizados hoje</div>
+        <div id="kpiToday" class="kpi-value">0</div>
+      </div>
+    </section>
+
+    <!-- conteúdo principal -->
+    <main class="tv-main-grid">
+      <!-- coluna esquerda -->
+      <section class="panel panel-big">
+        <div class="panel-header">
+          <span><i class="bi bi-bar-chart-line"></i> Funil por status</span>
+        </div>
+        <div id="funnelRows" class="funnel-rows"></div>
+      </section>
+
+      <!-- coluna direita: painel rotativo -->
+      <section class="panel panel-rotator">
+        <div class="panel-header">
+          <span id="rotatorTitle"><i class="bi bi-exclamation-triangle"></i> Atenção SLA</span>
+          <div class="rotator-dots" aria-hidden="true">
+            <span class="dot active" data-rotator="0"></span>
+            <span class="dot" data-rotator="1"></span>
+            <span class="dot" data-rotator="2"></span>
+          </div>
+        </div>
+        <div class="rotator-body">
+          <div class="rotator-panel active" data-panel="sla">
+            <div id="slaList" class="list-wrap"></div>
+          </div>
+          <div class="rotator-panel" data-panel="owners">
+            <div id="ownersList" class="list-wrap"></div>
+          </div>
+          <div class="rotator-panel" data-panel="latest">
+            <div id="latestLeads" class="list-wrap"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- rodapé -->
+    <footer class="tv-footer">
+      <div id="ticker" class="ticker">Conectando ao Firestore...</div>
+      <div class="footer-right">Auto atualização em tempo real</div>
+    </footer>
+  </div>
+
+  <script type="module" src="./js/dashboard-tv.js"></script>
+</body>
+</html>

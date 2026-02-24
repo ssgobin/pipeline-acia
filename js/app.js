@@ -23,7 +23,8 @@ const OPTIONS = {
   historico: ["ASSOCIADO", "ACIA NETWORKING", "BENEFICIOS"],
   evento: ["TODOS", "65 ANOS", "JANTAR EMPRESARIO", "EXPOEMPRESAS", "65 ANOS + JANTAR", "JANTAR + EXPO", "65 ANOS + EXPO"],
   responsavel: ["BRUNA", "GERSON", "JULIAO", "JAMES", "ADOLPHO", "LEONARDO", "MONICA", "THAIS"],
-  cota: ["NAMING RIGHTS", "DIAMANTE", "SAFIRA", "OURO", "EXPOSITORA", "CONVIDADA"],
+  cota: ["NAMING RIGHTS", "DIAMANTE", "SAFIRA", "OURO", "EXPOSITORA", "CONVIDADA", "FILIAÇÃO"],
+  beneficios: ["ACIA NETWORKING", "CONVÊNIO MÉDICO", "CONVÊNIO ODONTOLÓGICO", "LOCAÇÕES", "SCPC", "CRC", "OUTRO"],
 };
 
 // Status (exibicao) + regra 1-1-1 (STATUS -> FEEDBACK -> PRÓXIMA AÇÃO)
@@ -84,6 +85,14 @@ function fillSelect(selectEl, values, includeBlank = true) {
     op.textContent = v;
     selectEl.appendChild(op);
   }
+}
+
+function setSelectOptions(selectEl, values, includeBlank = true, keepValue = true) {
+  const current = keepValue ? selectEl.value : "";
+  fillSelect(selectEl, values, includeBlank);
+  if (!current) return;
+  const match = [...selectEl.options].find(o => canonStatus(o.value) === canonStatus(current));
+  if (match) selectEl.value = match.value;
 }
 
 function toast(message, type = "info") {
@@ -189,6 +198,7 @@ const leadsCol = collection(db, "leads");
 // ---------- State ----------
 let LEADS = [];
 let unsubscribe = null;
+let editingLead = null;
 
 // ---------- Init selects ----------
 fillSelect($("segmento"), OPTIONS.segmento);
@@ -209,9 +219,55 @@ fillSelect($("filterSeg"), OPTIONS.segmento, true);
 
 applyStatusToFields($("status").value || "PENDENTE", $("feedback"), $("proximaAcao"));
 
+function updateCotaFields() {
+  const isFiliacao = canonStatus($("cotaIdeal").value) === "FILIACAO";
+  const label2 = $("labelCotaOpcao2");
+  const label3 = $("labelCotaOpcao3");
+  if (label2) label2.textContent = isFiliacao ? "Beneficio 1" : "Cotacao opcao 2";
+  if (label3) label3.textContent = isFiliacao ? "Beneficio 2" : "Cota opcao 3";
+
+  if (isFiliacao) {
+    setSelectOptions($("cotaOpcao2"), OPTIONS.beneficios, true, true);
+    setSelectOptions($("cotaOpcao3"), OPTIONS.beneficios, true, true);
+  } else {
+    setSelectOptions($("cotaOpcao2"), OPTIONS.cota, true, true);
+    setSelectOptions($("cotaOpcao3"), OPTIONS.cota, true, true);
+    $("beneficio1OutroWrap").classList.add("d-none");
+    $("beneficio1Outro").value = "";
+    $("beneficio2OutroWrap").classList.add("d-none");
+    $("beneficio2Outro").value = "";
+  }
+  updateBeneficioOutro();
+}
+
+function updateBeneficioOutro() {
+  const isFiliacao = canonStatus($("cotaIdeal").value) === "FILIACAO";
+  const isOutro1 = canonStatus($("cotaOpcao2").value) === "OUTRO";
+  const isOutro2 = canonStatus($("cotaOpcao3").value) === "OUTRO";
+
+  if (isFiliacao && isOutro1) {
+    $("beneficio1OutroWrap").classList.remove("d-none");
+  } else {
+    $("beneficio1OutroWrap").classList.add("d-none");
+    $("beneficio1Outro").value = "";
+  }
+
+  if (isFiliacao && isOutro2) {
+    $("beneficio2OutroWrap").classList.remove("d-none");
+  } else {
+    $("beneficio2OutroWrap").classList.add("d-none");
+    $("beneficio2Outro").value = "";
+  }
+}
+
 $("status").addEventListener("change", () => {
   applyStatusToFields($("status").value, $("feedback"), $("proximaAcao"));
 });
+
+$("cotaIdeal").addEventListener("change", updateCotaFields);
+$("cotaOpcao2").addEventListener("change", updateBeneficioOutro);
+$("cotaOpcao3").addEventListener("change", updateBeneficioOutro);
+updateCotaFields();
 
 // ---------- Modal ----------
 const modal = new bootstrap.Modal($("leadModal"));
@@ -230,22 +286,28 @@ function resetForm() {
   $("cotaIdeal").value = "";
   $("cotaOpcao2").value = "";
   $("cotaOpcao3").value = "";
+  $("beneficio1Outro").value = "";
+  $("beneficio2Outro").value = "";
   $("responsavel").value = "";
   $("status").value = "PENDENTE";
   applyStatusToFields($("status").value, $("feedback"), $("proximaAcao"));
   $("ultimoContato").value = "";
   $("contato").value = "";
   $("observacoes").value = "";
+  $("historicoLog").value = "";
   $("btnDeleteLead").classList.add("d-none");
   $("leadModalTitle").textContent = "Novo lead";
+  updateCotaFields();
 }
 
 function openNew() {
+  editingLead = null;
   resetForm();
   modal.show();
 }
 
 function openEdit(lead) {
+  editingLead = lead || null;
   resetForm();
   $("leadId").value = lead.id;
   $("firstName").value = lead.firstName || "";
@@ -260,15 +322,83 @@ function openEdit(lead) {
   $("cotaIdeal").value = lead.cotaIdeal || "";
   $("cotaOpcao2").value = lead.cotaOpcao2 || "";
   $("cotaOpcao3").value = lead.cotaOpcao3 || "";
+  $("beneficio1Outro").value = lead.beneficio1Outro || "";
+  $("beneficio2Outro").value = lead.beneficio2Outro || "";
   $("responsavel").value = lead.responsavel || "";
   $("status").value = (lead.status || "PENDENTE").toUpperCase();
   applyStatusToFields($("status").value, $("feedback"), $("proximaAcao"));
   $("ultimoContato").value = toDateInputValue(lead.ultimoContato);
   $("contato").value = lead.contato || "";
   $("observacoes").value = lead.observacoes || "";
+  $("historicoLog").value = lead.historicoLog || "";
   $("btnDeleteLead").classList.remove("d-none");
   $("leadModalTitle").textContent = "Editar lead";
+  updateCotaFields();
   modal.show();
+}
+
+function buildHistoryEntry(action) {
+  const now = new Date();
+  const ts = now.toLocaleString("pt-BR");
+  const status = $("status").value || "PENDENTE";
+  const resp = $("responsavel").value || "-";
+  return `${ts} • ${action} • Status: ${status} • Resp: ${resp}`;
+}
+
+function normalizeValue(value) {
+  if (value === null || value === undefined) return "";
+  return String(value).trim();
+}
+
+function normalizeDateOnly(value) {
+  if (!value) return "";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "";
+  return toDateInputValue(d);
+}
+
+function formatValue(value) {
+  const v = normalizeValue(value);
+  return v ? v : "-";
+}
+
+function buildChangeDetails(prev, next) {
+  const changes = [];
+  const pairs = [
+    ["Nome", prev.nome, next.nome],
+    ["Empresa", prev.company, next.company],
+    ["Segmento", prev.segmento, next.segmento],
+    ["Porte", prev.porte, next.porte],
+    ["Tempo assoc.", prev.tempoAssociacao, next.tempoAssociacao],
+    ["Hist. patrocinio", prev.historicoPatrocinio, next.historicoPatrocinio],
+    ["Historico", prev.historico, next.historico],
+    ["Evento", prev.evento, next.evento],
+    ["Cota ideal", prev.cotaIdeal, next.cotaIdeal],
+    ["Cota opcao 2", prev.cotaOpcao2, next.cotaOpcao2],
+    ["Cota opcao 3", prev.cotaOpcao3, next.cotaOpcao3],
+    ["Beneficio 1 (outro)", prev.beneficio1Outro, next.beneficio1Outro],
+    ["Beneficio 2 (outro)", prev.beneficio2Outro, next.beneficio2Outro],
+    ["Responsavel", prev.responsavel, next.responsavel],
+    ["Status", prev.status, next.status],
+    ["Ultimo contato", normalizeDateOnly(prev.ultimoContato), normalizeDateOnly(next.ultimoContato)],
+    ["Contato", prev.contato, next.contato],
+    ["Observacoes", prev.observacoes, next.observacoes],
+  ];
+
+  for (const [label, beforeRaw, afterRaw] of pairs) {
+    const before = normalizeValue(beforeRaw);
+    const after = normalizeValue(afterRaw);
+    if (before !== after) {
+      changes.push(`${label}: "${formatValue(before)}" -> "${formatValue(after)}"`);
+    }
+  }
+
+  return changes;
+}
+
+function appendHistory(existing, entry) {
+  if (!existing) return entry;
+  return `${entry}\n${existing}`;
 }
 
 // ---------- CRUD ----------
@@ -282,6 +412,13 @@ function buildPayload() {
   const nome = `${primeiro} ${sobrenome}`.trim();
 
   const ultimoContato = $("ultimoContato").value ? new Date($("ultimoContato").value + "T00:00:00") : null;
+  const isFiliacao = canonStatus($("cotaIdeal").value) === "FILIACAO";
+  const beneficio1Outro = isFiliacao && canonStatus($("cotaOpcao2").value) === "OUTRO"
+    ? ($("beneficio1Outro").value || "").trim()
+    : "";
+  const beneficio2Outro = isFiliacao && canonStatus($("cotaOpcao3").value) === "OUTRO"
+    ? ($("beneficio2Outro").value || "").trim()
+    : "";
 
   return {
     firstName: primeiro,
@@ -297,6 +434,8 @@ function buildPayload() {
     cotaIdeal: $("cotaIdeal").value || "",
     cotaOpcao2: $("cotaOpcao2").value || "",
     cotaOpcao3: $("cotaOpcao3").value || "",
+    beneficio1Outro,
+    beneficio2Outro,
     responsavel: $("responsavel").value || "",
     status,
     statusKey,
@@ -311,6 +450,15 @@ function buildPayload() {
 async function saveLead() {
   const id = $("leadId").value;
   const payload = buildPayload();
+  const action = id ? "Atualizado" : "Criado";
+  let entry = buildHistoryEntry(action);
+  if (id && editingLead) {
+    const changes = buildChangeDetails(editingLead, payload);
+    entry += changes.length ? ` • ${changes.join(" | ")}` : " • sem alteracoes";
+  } else if (!id) {
+    entry += ` • Empresa: ${formatValue(payload.company)} • Segmento: ${formatValue(payload.segmento)} • Cota: ${formatValue(payload.cotaIdeal)}`;
+  }
+  payload.historicoLog = appendHistory($("historicoLog").value || "", entry);
 
   // light validation
   if (!payload.company && !payload.nome) {
@@ -335,6 +483,7 @@ async function saveLead() {
       });
       toast("Lead atualizado", "success");
     }
+    $("historicoLog").value = payload.historicoLog;
     modal.hide();
   } catch (e) {
     console.error(e);
@@ -465,14 +614,20 @@ function renderTable(list) {
     `;
 
     tr.innerHTML = `
-      <td><div class="cell-main">${name}</div></td>
-      <td><div class="cell-sub">${company}</div></td>
-      <td><span class="cell-chip"><i class="bi bi-person"></i> ${resp}</span></td>
-      <td>${statusSelect}</td>
-      <td><div class="cell-wrap">${feedback}</div></td>
-      <td><div class="cell-wrap">${prox}</div></td>
-      <td>${escapeHtml(ultimo)} ${slaChip}</td>
-      <td class="text-end">
+      <td class="col-lead">
+        <div class="cell-main">${name}</div>
+        <div class="cell-sub">${company}</div>
+        <div class="cell-meta">
+          <span class="cell-chip"><i class="bi bi-person"></i> ${resp}</span>
+        </div>
+      </td>
+      <td class="col-status">${statusSelect}</td>
+      <td class="col-follow">
+        <div class="follow-line"><span class="follow-label">Feedback</span><span class="follow-text">${feedback}</span></div>
+        <div class="follow-line"><span class="follow-label">Próx.</span><span class="follow-text">${prox}</span></div>
+      </td>
+      <td class="col-last">${escapeHtml(ultimo)} ${slaChip}</td>
+      <td class="text-end col-actions">
         <button class="btn btn-sm btn-outline-light" data-action="edit" data-id="${lead.id}" title="Editar"><i class="bi bi-pencil"></i></button>
         <button class="btn btn-sm btn-outline-danger" data-action="delete" data-id="${lead.id}" title="Deletar"><i class="bi bi-trash"></i></button>
       </td>
