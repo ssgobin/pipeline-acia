@@ -7,6 +7,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
   <link rel="icon" type="image/svg+xml" href="./assets/img/logo_principal.svg" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="stylesheet" href="./css/dashboard-tv.css" />
 </head>
 <body>
@@ -54,37 +55,40 @@
       </div>
     </section>
 
-    <!-- conteúdo principal -->
+    <!-- conteúdo principal (grid 3 colunas) -->
     <main class="tv-main-grid">
-      <!-- coluna esquerda -->
-      <section class="panel panel-big">
+      <!-- coluna esquerda: Funil e Top Responsáveis -->
+      <section class="panel panel-left">
         <div class="panel-header">
-          <span><i class="bi bi-bar-chart-line"></i> Funil por status</span>
+          <span><i class="bi bi-arrow-down-funnel"></i> Funil por Status</span>
         </div>
         <div id="funnelRows" class="funnel-rows"></div>
       </section>
 
-      <!-- coluna direita: painel rotativo -->
-      <section class="panel panel-rotator">
+      <!-- coluna central: Gráfico Rotativo por Responsável -->
+      <section class="panel panel-center">
         <div class="panel-header">
-          <span id="rotatorTitle"><i class="bi bi-exclamation-triangle"></i> Atenção SLA</span>
-          <div class="rotator-dots" aria-hidden="true">
-            <span class="dot active" data-rotator="0"></span>
-            <span class="dot" data-rotator="1"></span>
-            <span class="dot" data-rotator="2"></span>
+          <div class="owner-header">
+            <span id="ownerChartTitle"><i class="bi bi-person-check"></i> Responsável</span>
+            <div class="owner-nav">
+              <button id="prevOwner" class="owner-btn"><i class="bi bi-chevron-left"></i></button>
+              <div id="ownerCounter" class="owner-counter">1/1</div>
+              <button id="nextOwner" class="owner-btn"><i class="bi bi-chevron-right"></i></button>
+            </div>
           </div>
         </div>
-        <div class="rotator-body">
-          <div class="rotator-panel active" data-panel="sla">
-            <div id="slaList" class="list-wrap"></div>
-          </div>
-          <div class="rotator-panel" data-panel="owners">
-            <div id="ownersList" class="list-wrap"></div>
-          </div>
-          <div class="rotator-panel" data-panel="latest">
-            <div id="latestLeads" class="list-wrap"></div>
-          </div>
+        <div class="owner-chart-wrap">
+          <canvas id="ownerChart" style="max-height: 300px;"></canvas>
+          <div id="ownerStats" class="owner-stats"></div>
         </div>
+      </section>
+
+      <!-- coluna direita: SLA e Últimos Leads -->
+      <section class="panel panel-right">
+        <div class="panel-header">
+          <span><i class="bi bi-exclamation-triangle"></i> Alertas SLA</span>
+        </div>
+        <div id="slaList" class="list-wrap sla-wrap"></div>
       </section>
     </main>
 

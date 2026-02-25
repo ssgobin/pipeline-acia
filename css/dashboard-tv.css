@@ -147,7 +147,7 @@ html, body{
 .tv-main-grid{
   min-height:0;
   display:grid;
-  grid-template-columns: 1.6fr 1fr;
+  grid-template-columns: 1fr 1.1fr 1fr;
   gap:12px;
 }
 
@@ -161,8 +161,8 @@ html, body{
   flex-direction:column;
 }
 
-.panel-big{
-  grid-row:1 / span 1;
+.panel-left, .panel-center, .panel-right {
+  min-height:0;
 }
 
 .panel-header{
@@ -176,41 +176,118 @@ html, body{
   background:rgba(255,255,255,.02);
 }
 
-.panel-rotator{
-  min-height:0;
+.owner-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 }
-.rotator-body{
-  position:relative;
-  flex:1;
-  min-height:0;
+
+.owner-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-.rotator-panel{
-  position:absolute;
-  inset:0;
-  opacity:0;
-  pointer-events:none;
-  transition:opacity .25s ease;
+
+.owner-btn {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+  color: var(--text);
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
 }
-.rotator-panel.active{
-  opacity:1;
-  pointer-events:auto;
+
+.owner-btn:hover {
+  background: rgba(255,255,255,.12);
+  border-color: rgba(255,255,255,.2);
 }
-.rotator-panel .list-wrap{
-  height:100%;
+
+.owner-counter {
+  font-size: 0.8rem;
+  color: var(--muted);
+  min-width: 40px;
+  text-align: center;
 }
-.rotator-dots{display:flex; align-items:center; gap:6px}
-.rotator-dots .dot{
-  width:8px;
-  height:8px;
-  border-radius:50%;
-  border:1px solid rgba(255,255,255,.25);
-  background:rgba(255,255,255,.08);
-  opacity:.7;
-  cursor:pointer;
+
+.owner-chart-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  overflow: auto;
+  opacity: 1;
 }
-.rotator-dots .dot.active{
-  background:rgba(255,255,255,.8);
-  opacity:1;
+
+.owner-chart-wrap canvas {
+  flex: 1;
+  min-height: 200px;
+}
+
+.owner-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.owner-stat-item {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 10px;
+  padding: 8px;
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+.owner-stat-label {
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.owner-stat-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.sla-wrap {
+  max-height: 100%;
+  overflow-y: auto;
+}
+
+/* Fade animations */
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-out {
+  animation: fadeOut 0.4s ease-out forwards;
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-in forwards;
 }
 
 .funnel-rows{
