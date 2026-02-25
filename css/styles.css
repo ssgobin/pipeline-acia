@@ -150,16 +150,33 @@ body.app-bg{
   background:linear-gradient(180deg, rgba(15,23,48,.98), rgba(11,16,32,.98));
   color:var(--text);
   border:1px solid var(--stroke);
+  box-shadow:0 25px 50px -12px rgba(0,0,0,.5);
 }
-.modal-saas .modal-header{border-bottom:1px solid var(--stroke)}
-.modal-saas .modal-footer{border-top:1px solid var(--stroke)}
+.modal-saas .modal-header{
+  border-bottom:1px solid var(--stroke);
+  padding:18px 20px;
+  background:rgba(255,255,255,.03);
+}
+.modal-saas .modal-footer{
+  border-top:1px solid var(--stroke);
+  padding:16px 20px;
+  background:rgba(0,0,0,.15);
+}
+.modal-saas .modal-body{
+  padding:24px;
+}
 .modal-saas .form-control, .modal-saas .form-select{
   background:rgba(255,255,255,.06);
   border:1px solid rgba(255,255,255,.10);
   color:var(--text);
+  padding:10px 14px;
 }
 .modal-saas .form-control::placeholder{color:rgba(233,238,252,.55)}
-.modal-saas .form-control:disabled{opacity:.8}
+.modal-saas .form-control:disabled{
+  opacity:.8;
+  background:rgba(255,255,255,.03);
+  cursor:not-allowed;
+}
 
 .modal-lead .form-section-title{
   font-size:.85rem;
@@ -167,6 +184,7 @@ body.app-bg{
   letter-spacing:.8px;
   color:var(--muted);
   margin:2px 0 -4px;
+  font-weight:600;
 }
 .modal-lead .form-divider{
   height:1px;
@@ -176,8 +194,31 @@ body.app-bg{
 .modal-lead .form-control,
 .modal-lead .form-select{
   border-radius:12px;
+  transition: all .2s ease;
 }
-.modal-lead textarea.form-control{min-height:96px}
+.modal-lead .form-control:focus,
+.modal-lead .form-select:focus{
+  background:rgba(255,255,255,.10);
+  border-color:rgba(124,92,255,.5);
+  box-shadow:0 0 0 3px rgba(124,92,255,.12);
+}
+.modal-lead textarea.form-control{
+  min-height:96px;
+  resize: vertical;
+}
+.modal-lead #historicoLog{
+  background:rgba(255,255,255,.04);
+  border-color:rgba(255,255,255,.08);
+  font-family: 'Courier New', monospace;
+  font-size:.88rem;
+  color:rgba(233,238,252,.90);
+}
+.modal-lead .form-label{
+  font-size:.88rem;
+  font-weight:500;
+  margin-bottom:6px;
+  color:rgba(233,238,252,.88);
+}
 
 .app-footer{padding:10px 0 16px; display:flex; justify-content:space-between; border-top:1px solid rgba(255,255,255,.06)}
 
