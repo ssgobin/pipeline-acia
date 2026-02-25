@@ -514,6 +514,7 @@ async function setLeadStatus(id, newStatus) {
       statusKey,
       feedback: map.feedback,
       proximaAcao: map.proxima,
+      ultimoContato: new Date().toISOString(),
       updatedAt: serverTimestamp(),
     });
   } catch (e) {
